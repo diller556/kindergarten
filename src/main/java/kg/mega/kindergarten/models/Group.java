@@ -19,6 +19,17 @@ public class Group {
     private Teacher teacher;
 
     private boolean active = true;
+    @ManyToOne
+    @JoinColumn(name = "assistant_id")
+    private Assistant assistant;
+
+    public Assistant getAssistant() {
+        return assistant;
+    }
+
+    public void setAssistant(Assistant assistant) {
+        this.assistant = assistant;
+    }
 
     public boolean isActive() {
         return active;

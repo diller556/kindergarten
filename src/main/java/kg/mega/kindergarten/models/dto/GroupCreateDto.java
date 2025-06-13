@@ -11,6 +11,16 @@ public class GroupCreateDto {
     private Long ageGroupId;
     @Positive
     private Long teacherId;
+    @Positive
+    private Long assistantId;
+
+    public Long getAssistantId() {
+        return assistantId;
+    }
+
+    public void setAssistantId(Long assistantId) {
+        this.assistantId = assistantId;
+    }
 
     public String getName() {
         return name;

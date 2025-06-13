@@ -1,6 +1,6 @@
 package kg.mega.kindergarten.controllers;
 
-import jakarta.validation.Valid;
+import kg.mega.kindergarten.models.dto.AssignAssistantRequest;
 import kg.mega.kindergarten.models.dto.AssignTeacherRequest;
 import kg.mega.kindergarten.models.dto.GroupCreateDto;
 import kg.mega.kindergarten.models.dto.GroupDto;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
-@RequestMapping("/api/v1/group")
+@RequestMapping("/api/v1/groups")
 public class GroupController implements CRUDOperations<GroupDto, GroupCreateDto>{
     private final GroupService groupService;
 
@@ -23,6 +23,15 @@ public class GroupController implements CRUDOperations<GroupDto, GroupCreateDto>
             @PathVariable Long groupId,
             @RequestBody AssignTeacherRequest request) {
         return groupService.assignTeacherToGroup(groupId, request.getTeacherId());
+        //http://localhost:8080/api/v1/group/1/assign-teacher
+    }
+
+
+    @PostMapping("/{groupId}/assign-assistant")
+    public ResponseEntity<?> assignAssistantToGroup(
+            @PathVariable Long groupId,
+            @RequestBody AssignAssistantRequest request){
+        return groupService.assignAssistantToGroup(groupId, request.getAssistantId());
     }
 
     @Override
@@ -49,4 +58,5 @@ public class GroupController implements CRUDOperations<GroupDto, GroupCreateDto>
     public boolean delete(GroupCreateDto groupCreateDto) {
         return false;
     }
+
 }
