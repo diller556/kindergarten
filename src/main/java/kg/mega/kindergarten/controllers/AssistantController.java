@@ -1,10 +1,8 @@
 package kg.mega.kindergarten.controllers;
 
-import kg.mega.kindergarten.models.Assistant;
 import kg.mega.kindergarten.models.dto.AssistantCreateDto;
 import kg.mega.kindergarten.models.dto.AssistantDto;
 import kg.mega.kindergarten.services.AssistantService;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 

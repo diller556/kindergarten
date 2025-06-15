@@ -1,17 +1,23 @@
 package kg.mega.kindergarten.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "childrens")
+@Table(name = "children")
 public class Child extends Human{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+    @NotNull
+    @Past
     private LocalDate dateOfBirth;
+    private boolean active = true;
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
@@ -24,6 +30,14 @@ public class Child extends Human{
             inverseJoinColumns = @JoinColumn(name = "parent_id", nullable = false))
     private List<Parent> parents;
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public Group getGroup() {
         return group;
     }
@@ -32,11 +46,11 @@ public class Child extends Human{
         this.group = group;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
