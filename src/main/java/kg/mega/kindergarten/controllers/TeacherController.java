@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 @RestController
-@RequestMapping("/pai/v1/teacher")
+@RequestMapping("/api/v1/teacher")
 public class TeacherController implements CRUDOperations<TeacherDto, TeacherCreateDto> {
     private final TeacherService teacherService;
 

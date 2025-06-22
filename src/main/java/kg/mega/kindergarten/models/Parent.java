@@ -2,9 +2,13 @@ package kg.mega.kindergarten.models;
 
 import jakarta.persistence.*;
 import kg.mega.kindergarten.enums.ParentRole;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "parents")
+@Getter
+@Setter
 public class Parent extends Human{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,28 +20,4 @@ public class Parent extends Human{
 
     @Enumerated(EnumType.STRING)
     private ParentRole role;
-
-    public ParentRole getRole() {
-        return role;
-    }
-
-    public void setRole(ParentRole role) {
-        this.role = role;
-    }
-
-    public Contact getContact() {
-        return contact;
-    }
-
-    public void setContact(Contact contact) {
-        this.contact = contact;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 }

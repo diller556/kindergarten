@@ -3,9 +3,12 @@ package kg.mega.kindergarten.controllers;
 import kg.mega.kindergarten.models.dto.AssistantCreateDto;
 import kg.mega.kindergarten.models.dto.AssistantDto;
 import kg.mega.kindergarten.services.AssistantService;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
+@RestController
+@RequestMapping("api/v1/assistant")
 public class AssistantController implements CRUDOperations<AssistantDto, AssistantCreateDto> {
 
     private AssistantService assistantService;

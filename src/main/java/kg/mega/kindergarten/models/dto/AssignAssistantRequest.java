@@ -1,16 +1,13 @@
 package kg.mega.kindergarten.models.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class AssignAssistantRequest {
     @NotBlank
     private Long assistantId;
 
-    public Long getAssistantId() {
-        return assistantId;
-    }
-
-    public void setAssistantId(Long assistantId) {
-        this.assistantId = assistantId;
-    }
 }

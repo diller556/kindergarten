@@ -1,9 +1,13 @@
 package kg.mega.kindergarten.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "age_groups")
+@Getter
+@Setter
 public class AgeGroup {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,35 +16,4 @@ public class AgeGroup {
     private double price;
     private boolean active = true;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public double getPrice() {
-        return price;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
 }

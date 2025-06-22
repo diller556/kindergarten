@@ -1,9 +1,13 @@
 package kg.mega.kindergarten.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "groups")
+@Getter
+@Setter
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,52 +26,4 @@ public class Group {
     @ManyToOne
     @JoinColumn(name = "assistant_id")
     private Assistant assistant;
-
-    public Assistant getAssistant() {
-        return assistant;
-    }
-
-    public void setAssistant(Assistant assistant) {
-        this.assistant = assistant;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public AgeGroup getAgeGroup() {
-        return ageGroup;
-    }
-
-    public void setAgeGroup(AgeGroup ageGroup) {
-        this.ageGroup = ageGroup;
-    }
 }

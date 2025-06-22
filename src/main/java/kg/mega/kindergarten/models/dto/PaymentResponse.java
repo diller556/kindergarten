@@ -5,6 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AssistantDto {
-    private Long id;
+public class PaymentResponse {
+    private Long paymentId;
+    private String paymentDate;
+
 }
