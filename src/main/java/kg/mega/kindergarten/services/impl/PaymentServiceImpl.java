@@ -1,62 +1,84 @@
 package kg.mega.kindergarten.services.impl;
 
-import kg.mega.kindergarten.exceptions.NotFoundException;
-import kg.mega.kindergarten.exceptions.OperationNotAllowedException;
+import kg.mega.kindergarten.enums.Delete;
+import kg.mega.kindergarten.enums.PaymentType;
+import kg.mega.kindergarten.mappers.PaymentMapper;
 import kg.mega.kindergarten.models.Child;
 import kg.mega.kindergarten.models.Payment;
-import kg.mega.kindergarten.models.dto.PaymentRequest;
-import kg.mega.kindergarten.models.dto.PaymentResponse;
-import kg.mega.kindergarten.repositories.ChildRepo;
+import kg.mega.kindergarten.models.dtos.PaymentCreateDto;
+import kg.mega.kindergarten.models.dtos.PaymentDto;
 import kg.mega.kindergarten.repositories.PaymentRepo;
+import kg.mega.kindergarten.services.ChildService;
 import kg.mega.kindergarten.services.PaymentService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
+import java.util.List;
 
 @Service
+
 public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepo paymentRepo;
-    private final ChildRepo childRepo;
+    private final ChildService childService;
 
-    public PaymentServiceImpl(PaymentRepo paymentRepo, ChildRepo childRepo) {
+    public PaymentServiceImpl(PaymentRepo paymentRepo, ChildService childService) {
         this.paymentRepo = paymentRepo;
-        this.childRepo = childRepo;
+
+        this.childService = childService;
     }
 
     @Override
-    @Transactional
-    public ResponseEntity<PaymentResponse> makePayment(PaymentRequest request) {
-        Child child = childRepo.findByIdAndActiveIsTrue(request.getChildId()).orElseThrow(() -> new NotFoundException("Активный ребенок не найден с ID: " + request.getChildId()));
-
-        if (request.getPaymentSum() <= 0) {
-            throw new OperationNotAllowedException("Сумма платежа должна быть больше 0.");
-        }
-
-        if (child.getGroup() == null) {
-            throw new OperationNotAllowedException("Ребенок не состоит в активной группе. Невозможно принять платеж.");
-        }
-        if (!child.getGroup().isActive()) {
-            throw new OperationNotAllowedException("Группа, в которой состоит ребенок, неактивна. Невозможно принять платеж.");
-        }
-
-        Payment payment = new Payment();
+    public PaymentDto create(PaymentCreateDto paymentCreateDto, PaymentType paymentType) {
+        Child child = childService.findById(paymentCreateDto.childId());
+        Payment payment = PaymentMapper.INSTANCE.paymentCreateDtoToPayment(paymentCreateDto);
         payment.setChild(child);
-        payment.setPaymentSum(request.getPaymentSum());
-        payment.setPaymentType(request.getPaymentType()); // Здесь тип уже PaymentType enum
-        payment.setPeriod(request.getPeriod());
-        payment.setPaymentDate(LocalDate.from(LocalDateTime.now()));
+        payment.setPaymentType(paymentType);
+        payment.setPaymentDate(LocalDateTime.now());
+        payment = paymentRepo.save(payment);
 
-        Payment savedPayment = paymentRepo.save(payment);
+        return PaymentMapper.INSTANCE.paymentToPaymentDto(payment);
+    }
 
-        PaymentResponse response = new PaymentResponse();
-        response.setPaymentId(savedPayment.getId());
-        response.setPaymentDate(savedPayment.getPaymentDate().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+    @Override
+    public List<Payment> findAllList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        return paymentRepo.findAllList(pageable);
 
-        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    public PaymentDto delete(Long id) {
+        Payment payment = paymentRepo.findById(id).orElseThrow();
+        paymentRepo.deleteById(id);
+        return PaymentMapper.INSTANCE.paymentToPaymentDto(payment) ;
+
+    }
+
+    @Override
+    public PaymentDto update(PaymentDto paymentDto, Delete delete) {
+        Payment payment = PaymentMapper.INSTANCE.paymentDtoToPayment(paymentDto);
+        payment.setDelete(delete);
+        payment = paymentRepo.save(payment);
+
+
+        return PaymentMapper.INSTANCE.paymentToPaymentDto(payment);
+    }
+
+    @Override
+    public Payment findById(Long id) {
+        return paymentRepo.findByIdPayment(id);
+
+    }
+
+    @Override
+    public Payment findByChildId(Long child) {
+        return paymentRepo.findTopByChildIdOrderByPaymentDateDesc(child);
+    }
+    @Override
+    public double sumPaymentsByChildIdAndMonth(Long child, int month, int year) {
+        return paymentRepo.sumPaymentsByChildIdAndMonth(child, month, year);
     }
 }

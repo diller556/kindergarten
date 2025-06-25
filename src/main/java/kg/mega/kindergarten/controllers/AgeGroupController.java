@@ -1,7 +1,11 @@
 package kg.mega.kindergarten.controllers;
 
-import kg.mega.kindergarten.models.dto.AgeGroupCreateDto;
-import kg.mega.kindergarten.models.dto.AgeGroupDto;
+import io.swagger.v3.oas.annotations.Operation;
+import kg.mega.kindergarten.controllers.cruds.CRUDController;
+import kg.mega.kindergarten.enums.Delete;
+import kg.mega.kindergarten.models.AgeGroup;
+import kg.mega.kindergarten.models.dtos.AgeGroupCreateDto;
+import kg.mega.kindergarten.models.dtos.AgeGroupDto;
 import kg.mega.kindergarten.services.AgeGroupService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/age")
-public class AgeGroupController implements CRUDOperations<AgeGroupDto, AgeGroupCreateDto> {
+@RequestMapping("/api/age-group")
+public class AgeGroupController implements CRUDController<AgeGroupDto, AgeGroupCreateDto, AgeGroup> {
     private final AgeGroupService ageGroupService;
 
     public AgeGroupController(AgeGroupService ageGroupService) {
@@ -18,27 +22,32 @@ public class AgeGroupController implements CRUDOperations<AgeGroupDto, AgeGroupC
     }
 
     @Override
-    public AgeGroupDto create(AgeGroupDto ageGroupDto) {
-        return null;
+    @Operation(summary = "Создать новую возрастную группу")
+    public AgeGroupDto create(AgeGroupCreateDto ageGroupCreateDto) {
+        return ageGroupService.create(ageGroupCreateDto);
     }
 
     @Override
-    public AgeGroupDto read(AgeGroupCreateDto ageGroupCreateDto) {
-        return null;
+    @Operation(summary = "Обновить существующую возрастную группу")
+    public AgeGroupDto update(AgeGroupDto ageGroupDto, Delete delete) {
+        return ageGroupService.update(ageGroupDto, delete);
     }
 
     @Override
-    public List<AgeGroupDto> readAll(int page, int size) {
-        return List.of();
+    @Operation(summary = "Удалить возрастную группу по ID")
+    public AgeGroupDto delete(Long id) {
+        return ageGroupService.delete(id);
     }
 
     @Override
-    public AgeGroupDto update(AgeGroupDto ageGroupDto) {
-        return null;
+    @Operation(summary = "Получить список всех возрастных групп")
+    public List<AgeGroup> allList(int page, int size) {
+        return ageGroupService.allList(page, size);
     }
 
     @Override
-    public boolean delete(AgeGroupCreateDto ageGroupCreateDto) {
-        return false;
+    @Operation(summary = "Найти возрастную группу по ID")
+    public AgeGroup findById(Long id) {
+        return ageGroupService.findById(id);
     }
 }

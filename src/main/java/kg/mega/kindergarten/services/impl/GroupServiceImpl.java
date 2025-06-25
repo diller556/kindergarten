@@ -1,99 +1,125 @@
 package kg.mega.kindergarten.services.impl;
 
-
-import kg.mega.kindergarten.exceptions.NotFoundException;
-import kg.mega.kindergarten.exceptions.OperationNotAllowedException;
-import kg.mega.kindergarten.models.*;
-import kg.mega.kindergarten.repositories.*;
+import kg.mega.kindergarten.enums.Delete;
+import kg.mega.kindergarten.enums.Position;
+import kg.mega.kindergarten.mappers.GroupMapper;
+import kg.mega.kindergarten.models.AgeGroup;
+import kg.mega.kindergarten.models.Child;
+import kg.mega.kindergarten.models.Group;
+import kg.mega.kindergarten.models.Teacher;
+import kg.mega.kindergarten.models.dtos.GroupCreateDto;
+import kg.mega.kindergarten.models.dtos.GroupDto;
+import kg.mega.kindergarten.repositories.ChildRepo;
+import kg.mega.kindergarten.repositories.GroupRepo;
+import kg.mega.kindergarten.services.AgeGroupService;
 import kg.mega.kindergarten.services.GroupService;
-import org.springframework.http.ResponseEntity;
+import kg.mega.kindergarten.services.TeacherService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
-import java.util.UUID;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
+
 public class GroupServiceImpl implements GroupService {
+    private final GroupRepo groupRepo;
+    private final AgeGroupService ageGroupService;
+    private final TeacherService teacherService;
+    private final ChildRepo childRepo;
 
-    private static final int MAX_CHILDREN_PER_GROUP = 20;
-    public final ChildRepo childRepo;
-    public final AgeGroupRepo ageGroupRepo;
-    public final AssistantRepo assistantRepo;
-    public final TeacherRepo teacherRepo;
-    public final GroupRepo groupRepo;
-
-    public GroupServiceImpl(ChildRepo childRepo, AgeGroupRepo ageGroupRepo, AssistantRepo assistantRepo, TeacherRepo teacherRepo, GroupRepo groupRepo) {
-        this.childRepo = childRepo;
-        this.ageGroupRepo = ageGroupRepo;
-        this.assistantRepo = assistantRepo;
-        this.teacherRepo = teacherRepo;
+    public GroupServiceImpl(GroupRepo groupRepo, AgeGroupService ageGroupService, TeacherService teacherService, ChildRepo childRepo) {
         this.groupRepo = groupRepo;
+        this.ageGroupService = ageGroupService;
+        this.teacherService = teacherService;
+        this.childRepo = childRepo;
     }
 
     @Override
-    public ResponseEntity<?> assignTeacherToGroup(Long groupId, Long teacherId) {
-        Group group = (Group) groupRepo.findByIdAndActiveIsTrue(groupId).orElseThrow(() -> new NotFoundException("Не найдена группа с ID: " + groupId));
+    public GroupDto create(GroupCreateDto groupCreateDto) {
+        AgeGroup ageGroup = ageGroupService.findById(groupCreateDto.ageGroupId());
 
-        Teacher teacher = teacherRepo.findById(teacherId).orElseThrow(() -> new NotFoundException("Не найден учитель с ID: " + teacherId));
+        Group group = GroupMapper.INSTANCE.groupCreateDtoToGroup(groupCreateDto);
 
-        Optional<Group> teacherGroup = groupRepo.findByTeacherAndActiveIsTrue(teacher);
-        if (teacherGroup.isPresent() && !teacherGroup.get().getId().equals(groupId)) {
-            throw new OperationNotAllowedException("Учитель уже назначен в другую активную группу");
-        }
+        group.setAgeGroup(ageGroup);
+        group = groupRepo.save(group);
 
-        if (group.getTeacher() != null) {
-            throw new OperationNotAllowedException("Группа уже имеет назначенного учителя");
-        }
-
-        group.setTeacher(teacher);
-        groupRepo.save(group);
-
-        return ResponseEntity.ok().build();
+        return GroupMapper.INSTANCE.groupToGroupDto(group);
     }
 
     @Override
-    public ResponseEntity<?> assignAssistantToGroup(Long groupId, Long assistantId) {
-        Group group = (Group) groupRepo.findByIdAndActiveIsTrue(groupId).orElseThrow(() -> new NotFoundException("Не найдена группа с ID: " + groupId));
+    public List<Group> findAllList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        return groupRepo.findAllList(pageable);
 
-        Assistant assistant = assistantRepo.findById(assistantId).orElseThrow(() -> new NotFoundException("Не найден помощник с ID: " + assistantId));
-
-        Optional<Group> assistantGroup = groupRepo.findByAssistantAndActiveIsTrue(assistant);
-        if (assistantGroup.isPresent() && !assistantGroup.get().getId().equals(groupId)) {
-            throw new OperationNotAllowedException("Помощник уже назначен в другую активную группу");
-        }
-
-        if (group.getAssistant() != null) {
-            throw new OperationNotAllowedException("Группа уже имеет назначенного помощника");
-        }
-
-        group.setAssistant(assistant);
-        groupRepo.save(group);
-
-        return ResponseEntity.ok().build();
     }
 
     @Override
-    public ResponseEntity<?> addChildToGroup(Long groupId, UUID childId) {
-        Group group = (Group) groupRepo.findByIdAndActiveIsTrue(groupId).orElseThrow(() -> new NotFoundException("Не найдена активная группа с ID: " + groupId));
+    public GroupDto delete(Long id) {
+        Group group = groupRepo.findById(id).orElseThrow();
+        groupRepo.deleteById(id);
+        return GroupMapper.INSTANCE.groupToGroupDto(group) ;
 
-        Child child = childRepo.findByIdAndActiveIsTrue(childId).orElseThrow(() -> new NotFoundException("Не найден активный ребенок с ID: " + childId));
+    }
 
-        if (child.getGroup() != null) {
-            if (child.getGroup().getId().equals(groupId)) {
-                throw new OperationNotAllowedException("Ребенок уже числится в этой группе.");
+    @Override
+    public GroupDto update(GroupDto groupDto, Delete delete) {
+        Group group = GroupMapper.INSTANCE.groupDtoToGroup(groupDto);
+        group.setDelete(delete);
+        group = groupRepo.save(group);
+
+
+        return GroupMapper.INSTANCE.groupToGroupDto(group);
+    }
+
+    @Override
+    public Group findById(Long id) {
+        return groupRepo.findByIdGroup(id);
+
+    }
+
+    @Override
+    public GroupDto addTeacherOrAssistantAndChild(Long groupId, Long teacherOrAssistantId,Long childId) {
+        Group group = groupRepo.findByIdGroup(groupId);
+        if(teacherOrAssistantId != null) {
+            Teacher teacherOrAssistant = teacherService.findById(teacherOrAssistantId);
+            if (teacherOrAssistant.getPosition() == Position.TEACHER &&
+                    groupRepo.existsByTeacher_Id(teacherOrAssistant.getId())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Teacher already assigned to another group");
+            }
+
+            if (teacherOrAssistant.getPosition() == Position.ASSISTANT &&
+                    groupRepo.existsByAssistant_Id(teacherOrAssistant.getId())) {
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Assistant already assigned to another group");
+            }
+
+            if (teacherOrAssistant.getPosition() == Position.TEACHER) {
+                group.setTeacher(teacherOrAssistant);
+            } else if (teacherOrAssistant.getPosition() == Position.ASSISTANT) {
+                group.setAssistant(teacherOrAssistant);
             } else {
-                throw new OperationNotAllowedException("Ребенок уже числится в другой активной группе с ID: " + child.getGroup().getId());
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unknown position");
             }
         }
+        if(childId != null) {
+            Child child = childRepo.findByIdChild(childId);
+            if (child == null) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Child not found");
+            }
 
-        long currentChildrenCount = childRepo.countByGroupIdAndActiveIsTrue(groupId);
-        if (currentChildrenCount >= MAX_CHILDREN_PER_GROUP) {
-            throw new OperationNotAllowedException("Превышен лимит детей в группе. Текущее количество: " + currentChildrenCount + ", Лимит: " + MAX_CHILDREN_PER_GROUP);
+            if (group.getChildren() == null) {
+                group.setChildren(new ArrayList<>());
+            }
+            group.addChild(child);
+
         }
-
-        child.setGroup(group);
-        childRepo.save(child);
-
-        return ResponseEntity.ok().build();
+        group = groupRepo.save(group);
+        return GroupMapper.INSTANCE.groupToGroupDto(group);
     }
+
+
 }

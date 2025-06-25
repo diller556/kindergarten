@@ -1,6 +1,8 @@
 package kg.mega.kindergarten.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import kg.mega.kindergarten.enums.Delete;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +15,9 @@ public class AgeGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private int ageGroup;
     private double price;
-    private boolean active = true;
 
+    @JsonIgnore
+    private Delete delete = Delete.ACTIVE;
 }

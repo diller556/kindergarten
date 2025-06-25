@@ -1,20 +1,30 @@
 package kg.mega.kindergarten.mappers;
 
-
 import kg.mega.kindergarten.models.Child;
-import kg.mega.kindergarten.models.dto.ChildCreateDto;
+import kg.mega.kindergarten.models.Group;
+import kg.mega.kindergarten.models.Parent;
+import kg.mega.kindergarten.models.dtos.ChildCreateDto;
+import kg.mega.kindergarten.models.dtos.ChildDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
 import org.mapstruct.factory.Mappers;
 
-@Mapper(uses = {AgeGroupMapper.class})
+import java.util.List;
+
+@Mapper
 public interface ChildMapper {
     ChildMapper INSTANCE = Mappers.getMapper(ChildMapper.class);
+    @Mapping(source = "parents", target = "parents")
 
-    @Mapping(target = "id", ignore = true)
-    Child toChild(ChildCreateDto childCreateDto);
-    ChildCreateDto toChildCreateDto(Child child);
+    @Mapping(source = "childCreateDto.group", target = "group.id")
+
+    Child childCreateDtoToChild(ChildCreateDto childCreateDto, List<Parent> parents);
+
+    ChildDto childToChildDto(Child child);
+
+
+    Child childDtoToChild(ChildDto childDto);
+    List<ChildDto> childToChildDto(List<Child> child);
 
 
 }

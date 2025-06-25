@@ -1,67 +1,61 @@
 package kg.mega.kindergarten.controllers;
 
-import jakarta.validation.Valid;
-import kg.mega.kindergarten.models.dto.*;
+import io.swagger.v3.oas.annotations.Operation;
+import kg.mega.kindergarten.controllers.cruds.CRUDController;
+import kg.mega.kindergarten.enums.Delete;
+import kg.mega.kindergarten.models.Group;
+import kg.mega.kindergarten.models.dtos.GroupCreateDto;
+import kg.mega.kindergarten.models.dtos.GroupDto;
 import kg.mega.kindergarten.services.GroupService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/groups")
-public class GroupController implements CRUDOperations<GroupDto, GroupCreateDto> {
+@RequestMapping("/api/group")
+public class GroupController implements CRUDController<GroupDto, GroupCreateDto, Group> {
     private final GroupService groupService;
 
     public GroupController(GroupService groupService) {
         this.groupService = groupService;
     }
 
-    @PostMapping("/{groupId}/assign-teacher")
-    public ResponseEntity<?> assignTeacherToGroup(
-            @PathVariable Long groupId,
-            @RequestBody AssignTeacherRequest request) {
-        return groupService.assignTeacherToGroup(groupId, request.getTeacherId());
-        //http://localhost:8080/api/v1/group/1/assign-teacher
-    }
-
-
-    @PostMapping("/{groupId}/assign-assistant")
-    public ResponseEntity<?> assignAssistantToGroup(
-            @PathVariable Long groupId,
-            @RequestBody AssignAssistantRequest request) {
-        return groupService.assignAssistantToGroup(groupId, request.getAssistantId());
-    }
-
-    @PostMapping("/{groupId}/add-child")
-    public ResponseEntity<?> addChildToGroup(
-            @PathVariable Long groupId,
-            @Valid @RequestBody AddChildRequest request) {
-        return groupService.addChildToGroup(groupId, request.getChildId());
+    @Operation(summary = "Создать новую группу")
+    @PostMapping("/create")
+    public GroupDto create(GroupCreateDto groupCreateDto) {
+        return groupService.create(groupCreateDto);
     }
 
     @Override
-    public GroupDto create(GroupDto groupDto) {
-        return null;
+    @Operation(summary = "Обновить данные группы")
+    public GroupDto update(GroupDto groupDto, Delete delete) {
+        return groupService.update(groupDto, delete);
     }
 
     @Override
-    public GroupDto read(GroupCreateDto groupCreateDto) {
-        return null;
+    @Operation(summary = "Удалить группу по ID")
+    public GroupDto delete(Long id) {
+        return groupService.delete(id);
     }
 
     @Override
-    public List<GroupDto> readAll(int page, int size) {
-        return List.of();
+    @Operation(summary = "Получить список всех групп")
+    public List<Group> allList(int page, int size) {
+        return groupService.findAllList(page, size);
     }
 
     @Override
-    public GroupDto update(GroupDto groupDto) {
-        return null;
+    @Operation(summary = "Найти группу по ID")
+    public Group findById(Long id) {
+        return groupService.findById(id);
     }
 
-    @Override
-    public boolean delete(GroupCreateDto groupCreateDto) {
-        return false;
+    @Operation(summary = "Добавить учителя, ассистента или ребенка в группу")
+    @PutMapping("/add-teacher-assistant-child")
+    public GroupDto addTeacherOrAssistant(
+            @RequestParam Long id,
+            @RequestParam(required = false) Long teacherOrAssistantId,
+            @RequestParam(required = false) Long childId) {
+        return groupService.addTeacherOrAssistantAndChild(id, teacherOrAssistantId, childId);
     }
 }
