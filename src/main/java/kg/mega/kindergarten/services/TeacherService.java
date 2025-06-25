@@ -18,6 +18,5 @@ public interface TeacherService {
     List<Teacher> findAllList(int page, int size);
 
     Teacher findById(Long id);
-    Teacher findByIdForGroup(Long id, Position position);
 
 }

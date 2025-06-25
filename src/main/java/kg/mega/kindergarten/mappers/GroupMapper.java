@@ -7,8 +7,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import java.util.List;
-
 @Mapper
 public interface GroupMapper {
     GroupMapper INSTANCE = Mappers.getMapper(GroupMapper.class);
@@ -19,5 +17,5 @@ public interface GroupMapper {
     GroupDto groupToGroupDto(Group group);
     Group groupDtoToGroup(GroupDto groupDto);
 
-    List<GroupDto> groupToGroupDto(List<Group> group);
+
 }

@@ -84,10 +84,5 @@ public class ChildServiceImpl implements ChildService {
 
     }
 
-    @Override
-    public List<Child> findByIdToList(Long childId) {
-        return childRepo.findByIdToList(childId);
-    }
-
 
 }

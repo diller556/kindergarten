@@ -5,10 +5,7 @@ import kg.mega.kindergarten.models.dtos.PaymentCreateDto;
 import kg.mega.kindergarten.models.dtos.PaymentDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
 
 @Mapper
 public interface PaymentMapper {
@@ -17,6 +14,5 @@ public interface PaymentMapper {
     Payment paymentCreateDtoToPayment(PaymentCreateDto paymentCreateDto);
     PaymentDto paymentToPaymentDto(Payment payment);
     Payment paymentDtoToPayment(PaymentDto paymentDto);
-    List<PaymentDto> paymentToPaymentDto(List<Payment> payment);
 
 }

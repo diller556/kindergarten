@@ -1,7 +1,6 @@
 package kg.mega.kindergarten.mappers;
 
 import kg.mega.kindergarten.models.Child;
-import kg.mega.kindergarten.models.Group;
 import kg.mega.kindergarten.models.Parent;
 import kg.mega.kindergarten.models.dtos.ChildCreateDto;
 import kg.mega.kindergarten.models.dtos.ChildDto;
@@ -24,7 +23,6 @@ public interface ChildMapper {
 
 
     Child childDtoToChild(ChildDto childDto);
-    List<ChildDto> childToChildDto(List<Child> child);
 
 
 }

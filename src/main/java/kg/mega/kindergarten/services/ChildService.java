@@ -17,6 +17,4 @@ public interface ChildService {
     List<Child> findAllList(int page, int size);
 
     Child findById(Long id);
-
-    List<Child> findByIdToList(Long childId);
 }

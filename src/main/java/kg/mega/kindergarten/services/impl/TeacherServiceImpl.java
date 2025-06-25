@@ -75,9 +75,4 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherRepo.findByIdTeacher(id);
 
     }
-
-    @Override
-    public Teacher findByIdForGroup(Long id, Position position) {
-        return teacherRepo.findByIdTeacher(id);
-    }
 }
