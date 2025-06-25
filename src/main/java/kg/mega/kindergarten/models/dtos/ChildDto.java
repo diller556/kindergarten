@@ -15,19 +15,19 @@ public record ChildDto(
         Long id,
 
         @NotBlank(message = "Имя не должно быть пустым")
-        @Schema(description = "Имя ребенка", example = "Иван", required = true)
+        @Schema(description = "Имя ребенка", example = "Медер", required = true)
         String firstName,
 
         @NotBlank(message = "Фамилия не должна быть пустой")
-        @Schema(description = "Фамилия ребенка", example = "Иванов", required = true)
+        @Schema(description = "Фамилия ребенка", example = "Муратов", required = true)
         String lastName,
 
-        @Schema(description = "Отчество ребенка", example = "Иванович", required = true)
+        @Schema(description = "Отчество ребенка", example = "Муратович", required = true)
         String patronymic,
 
         @NotNull(message = "Дата рождения обязательна")
         @Past(message = "Дата рождения должна быть в прошлом")
-        @Schema(description = "Дата рождения ребенка", example = "2015-06-21", required = true, type = "string",format = "date")
+        @Schema(description = "Дата рождения ребенка", example = "2020-08-09", required = true, type = "string",format = "date")
         LocalDate dateOfBirth,
         @JsonIgnoreProperties({"children"})
         Group group,

@@ -8,19 +8,19 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record TeacherCreateDto(
 
         @NotBlank(message = "Имя обязательно")
-        @Schema(description = "Имя преподавателя", example = "Айбек", required = true)
+        @Schema(description = "Имя преподавателя", example = "Мурат", required = true)
         String firstName,
 
         @NotBlank(message = "Фамилия обязательна")
-        @Schema(description = "Фамилия преподавателя", example = "Усенов", required = true)
+        @Schema(description = "Фамилия преподавателя", example = "Мамбеталиев", required = true)
         String lastName,
 
-        @Schema(description = "Отчество преподавателя", example = "Сатыбалдиевич")
+        @Schema(description = "Отчество преподавателя", example = "Мамбеталиевич")
         String patronymic,
 
         @NotNull(message = "Дата рождения обязательна")
         @Past(message = "Дата рождения должна быть в прошлом")
-        @Schema(description = "Дата рождения преподавателя", example = "1980-05-20", required = true, format = "date")
+        @Schema(description = "Дата рождения преподавателя", example = "1972-06-27", required = true, format = "date")
         LocalDate dateOfBirth,
 
         @NotNull(message = "Контактная информация обязательна")

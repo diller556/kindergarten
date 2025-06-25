@@ -8,21 +8,21 @@ public record ContactCreateDto(
         @NotBlank(message = "Основной номер телефона обязателен")
         @Pattern(
                 regexp = "\\+996\\d{9}",
-                message = "Основной номер должен начинаться с +996 и содержать всего 13 символов (например, +996700123456)"
+                message = "Основной номер должен начинаться с +996 и содержать всего 13 символов (например, +996550667788)"
         )
-        @Schema(description = "Основной номер телефона (только в формате +996)", example = "+996700123456", required = true)
+        @Schema(description = "Основной номер телефона (только в формате +996)", example = "+996550667788", required = true)
         String phoneNumber,
 
         @Pattern(
                 regexp = "\\+996\\d{9}",
-                message = "Дополнительный номер должен начинаться с +996 и содержать всего 13 символов (например, +996555123456)"
+                message = "Дополнительный номер должен начинаться с +996 и содержать всего 13 символов (например, +996700555434)"
         )
-        @Schema(description = "Дополнительный номер телефона (только в формате +996)", example = "+996555123456")
+        @Schema(description = "Дополнительный номер телефона (только в формате +996)", example = "+996700555434")
         String secondaryPhoneNumber,
 
         @NotBlank(message = "Электронная почта обязательна")
         @Email(message = "Некорректный формат электронной почты")
-        @Schema(description = "Электронная почта", example = "user@example.com", required = true)
+        @Schema(description = "Электронная почта", example = "user123@example.com", required = true)
         String email
 ) {}
 

@@ -9,14 +9,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record ParentDto(
         Long id,
         @NotBlank(message = "Имя не должно быть пустым")
-        @Schema(description = "Имя родителя", example = "Айбек", required = true)
+        @Schema(description = "Имя родителя", example = "Мурат", required = true)
         String firstName,
 
         @NotBlank(message = "Фамилия не должна быть пустой")
-        @Schema(description = "Фамилия родителя", example = "Усенов", required = true)
+        @Schema(description = "Фамилия родителя", example = "Мамбеталиев", required = true)
         String lastName,
 
-        @Schema(description = "Отчество родителя", example = "Сатыбалдиевич")
+        @Schema(description = "Отчество родителя", example = "Мамбеталиевич")
         String patronymic,
 
         @NotNull(message = "Роль обязательна")

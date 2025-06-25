@@ -18,12 +18,12 @@ public record PaymentCreateDto(
         @NotBlank(message = "Период оплаты обязателен")
         @Pattern(
                 regexp = "(0[1-9]|1[0-2])\\.\\d{4}",
-                message = "Период должен быть в формате MM.yyyy, например: 10.2024"
+                message = "Период должен быть в формате MM.yyyy, например: 12.2024"
         )
-        @Schema(description = "Период оплаты", type = "string", pattern = "MM.yyyy", example = "10.2024", required = true)
+        @Schema(description = "Период оплаты", type = "string", pattern = "MM.yyyy", example = "12.2024", required = true)
         String period,
 
         @Positive(message = "Сумма оплаты должна быть положительной")
-        @Schema(description = "Сумма оплаты", example = "6000", required = true)
+        @Schema(description = "Сумма оплаты", example = "10000", required = true)
         double paymentSum
 ) {}

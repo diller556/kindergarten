@@ -7,12 +7,12 @@ public record RegistrationDto(
 
         @NotBlank(message = "Имя пользователя обязательно")
         @Size(min = 4, max = 20, message = "Имя пользователя должно быть от 4 до 20 символов")
-        @Schema(description = "Имя пользователя", example = "user123", required = true)
+        @Schema(description = "Имя пользователя", example = "user001", required = true)
         String username,
 
         @NotBlank(message = "Пароль обязателен")
         @Size(min = 6, max = 100, message = "Пароль должен быть от 6 до 100 символов")
-        @Schema(description = "Пароль", example = "P@ssw0rd", required = true)
+        @Schema(description = "Пароль", example = "passWord123", required = true)
         String password
 
 ) {}

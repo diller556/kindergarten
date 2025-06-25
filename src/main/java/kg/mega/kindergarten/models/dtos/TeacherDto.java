@@ -14,14 +14,14 @@ public record TeacherDto(
         Long id,
 
         @NotBlank(message = "Имя обязательно")
-        @Schema(description = "Имя преподавателя", example = "Айбек", required = true)
+        @Schema(description = "Имя преподавателя", example = "Мурат", required = true)
         String firstName,
 
         @NotBlank(message = "Фамилия обязательна")
-        @Schema(description = "Фамилия преподавателя", example = "Усенов", required = true)
+        @Schema(description = "Фамилия преподавателя", example = "Мамбеталиев", required = true)
         String lastName,
 
-        @Schema(description = "Отчество преподавателя", example = "Сатыбалдиевич")
+        @Schema(description = "Отчество преподавателя", example = "Мамбеталиевич")
         String patronymic,
 
         @NotNull(message = "Должность обязательна")
@@ -30,7 +30,7 @@ public record TeacherDto(
 
         @NotNull(message = "Дата рождения обязательна")
         @Past(message = "Дата рождения должна быть в прошлом")
-        @Schema(description = "Дата рождения", example = "1980-05-20", format = "date", required = true)
+        @Schema(description = "Дата рождения", example = "1972-06-27", format = "date", required = true)
         LocalDate dateOfBirth,
 
         @NotNull(message = "Контактная информация обязательна")

@@ -23,13 +23,13 @@ public record ChildGroupHistoryDto(
         Child child,
 
         @NotNull(message = "Дата начала обязательна")
-        @Schema(description = "Дата и время начала периода", example = "2025-06-21 16:19:04")
+        @Schema(description = "Дата и время начала периода", example = "2025-06-25 20:11:12")
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 
         LocalDateTime startDate,
 
         @NotNull(message = "Дата окончания обязательна")
-        @Schema(description = "Дата и время окончания периода", example = "2025-07-21 16:19:03")
+        @Schema(description = "Дата и время окончания периода", example = "2025-07-25 20:11:12")
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime endDate,
 

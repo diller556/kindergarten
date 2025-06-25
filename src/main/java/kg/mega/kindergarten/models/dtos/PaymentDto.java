@@ -15,7 +15,7 @@ public record PaymentDto (
         @JsonIgnore
         double paymentSum,
 
-        @Schema(description = "Дата и время начала периода", example = "2025-06-21 16:19:04")
+        @Schema(description = "Дата и время начала периода", example = "2025-05-06 15:34:56")
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime paymentDate,
         @JsonIgnore
